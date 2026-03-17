@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ÉnergiePremium — PAC & Solaire à 1€</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #060D1F;
+  --navy-2: #0B1529;
+  --navy-3: #111E36;
+  --navy-4: #172544;
+  --gold: #D4A843;
+  --gold-2: #F0C96A;
+  --gold-3: #FBE39A;
+  --solar: #F97316;
+  --solar-2: #FDBA74;
+  --teal: #0EA5A0;
+  --white: #F8F6F0;
+  --off: #C8C4B8;
+  --muted: #6B7585;
+  --success: #22C55E;
+  --card-border: rgba(212,168,67,0.12);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--navy);color:var(--white);overflow-x:hidden;cursor:none}
+
+/* CUSTOM CURSOR */
+.cursor{position:fixed;width:10px;height:10px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.1s,background 0.3s;mix-blend-mode:difference}
+.cursor-ring{position:fixed;width:36px;height:36px;border:1px solid rgba(212,168,67,0.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all 0.12s ease;mix-blend-mode:difference}
+
+/* NOISE */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:1}
+
+/* TOPBAR */
+.topbar{background:linear-gradient(90deg,#7C1E0A,#B83008,#7C1E0A);background-size:200%;animation:topbar-shimmer 4s ease infinite;text-align:center;padding:11px 20px;font-size:0.78rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#fff;position:relative;z-index:100}
+@keyframes topbar-shimmer{0%,100%{background-position:0%}50%{background-position:100%}}
+.topbar em{color:var(--gold-3);font-style:normal;font-weight:700}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:90;padding:0 60px;height:72px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(20px);background:rgba(6,13,31,0.85);border-bottom:1px solid rgba(212,168,67,0.08);transition:all 0.3s}
+nav.scrolled{height:60px;background:rgba(6,13,31,0.97)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--gold);letter-spacing:0.06em;text-decoration:none}
+.nav-logo span{color:var(--white);font-weight:300}
+.nav-links{display:flex;gap:36px;list-style:none}
+.nav-links a{font-size:0.8rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--off);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover{color:var(--gold)}
+.nav-cta{background:linear-gradient(135deg,var(--gold),var(--gold-2));color:var(--navy);border:none;border-radius:8px;padding:10px 22px;font-family:'Outfit',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;box-shadow:0 4px 16px rgba(212,168,67,0.3)}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(212,168,67,0.4)}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:120px 60px 80px;overflow:hidden;z-index:2}
+
+/* Animated mesh background */
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-bg-orb{position:absolute;border-radius:50%;filter:blur(80px);animation:orb-float 8s ease-in-out infinite}
+.orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(212,168,67,0.07) 0%,transparent 70%);top:-100px;right:-100px;animation-delay:0s}
+.orb-2{width:500px;height:500px;background:radial-gradient(circle,rgba(249,115,22,0.05) 0%,transparent 70%);bottom:-80px;left:-80px;animation-delay:-3s}
+.orb-3{width:300px;height:300px;background:radial-gradient(circle,rgba(14,165,160,0.05) 0%,transparent 70%);top:40%;left:30%;animation-delay:-5s}
+@keyframes orb-float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(20px,-20px) scale(1.05)}}
+
+/* Grid lines */
+.hero-grid-lines{position:absolute;inset:0;background-image:linear-gradient(rgba(212,168,67,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(212,168,67,0.03) 1px,transparent 1px);background-size:80px 80px;z-index:0}
+
+.hero-inner{position:relative;z-index:2;max-width:1200px;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+
+.hero-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:24px;animation:rise 0.8s ease both}
+.eyebrow-line{width:32px;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
+.eyebrow-text{font-size:0.72rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold)}
+
+.hero-h1{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,5vw,5.2rem);line-height:1.0;font-weight:700;margin-bottom:28px;animation:rise 0.8s 0.1s ease both}
+.hero-h1 .line-thin{font-weight:300;font-style:italic;color:var(--off);display:block}
+.hero-h1 .line-gold{background:linear-gradient(135deg,var(--gold),var(--gold-2),var(--gold-3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block}
+.hero-h1 .line-white{display:block}
+
+.hero-desc{font-size:1rem;color:var(--off);line-height:1.7;font-weight:300;max-width:480px;margin-bottom:36px;animation:rise 0.8s 0.2s ease both}
+.hero-desc strong{color:var(--white);font-weight:500}
+
+.hero-badges{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:40px;animation:rise 0.8s 0.3s ease both}
+.badge{display:flex;align-items:center;gap:6px;background:rgba(212,168,67,0.07);border:1px solid rgba(212,168,67,0.18);border-radius:100px;padding:6px 14px;font-size:0.72rem;font-weight:500;color:var(--gold-2);letter-spacing:0.05em}
+.badge .b-icon{font-size:0.9rem}
+
+.hero-stats{display:flex;gap:0;animation:rise 0.8s 0.4s ease both;border:1px solid var(--card-border);border-radius:14px;overflow:hidden;background:rgba(11,21,41,0.6);backdrop-filter:blur(10px)}
+.hstat{padding:20px 28px;flex:1;text-align:center;position:relative}
+.hstat+.hstat::before{content:'';position:absolute;left:0;top:20%;height:60%;width:1px;background:var(--card-border)}
+.hstat-num{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:var(--gold);line-height:1}
+.hstat-label{font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+
+/* FORM RIGHT */
+.hero-form-wrap{animation:rise 0.8s 0.15s ease both}
+.form-card{background:linear-gradient(145deg,var(--navy-3),var(--navy-2));border:1px solid var(--card-border);border-radius:24px;padding:44px 40px;position:relative;overflow:hidden;box-shadow:0 60px 120px rgba(0,0,0,0.6),inset 0 1px 0 rgba(212,168,67,0.15)}
+.form-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),var(--gold-2),var(--gold),transparent)}
+.form-card::after{content:'';position:absolute;top:-80px;right:-80px;width:200px;height:200px;background:radial-gradient(circle,rgba(212,168,67,0.06) 0%,transparent 70%);pointer-events:none}
+
+.form-offer-toggle{display:flex;gap:0;background:rgba(6,13,31,0.8);border:1px solid var(--card-border);border-radius:10px;padding:4px;margin-bottom:28px}
+.offer-tab{flex:1;padding:9px 12px;border:none;background:transparent;color:var(--muted);font-family:'Outfit',sans-serif;font-size:0.78rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;border-radius:7px;transition:all 0.25s}
+.offer-tab.active{background:linear-gradient(135deg,var(--gold),var(--gold-2));color:var(--navy);box-shadow:0 4px 12px rgba(212,168,67,0.3)}
+
+.fc-title{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;margin-bottom:4px}
+.fc-sub{font-size:0.8rem;color:var(--muted);margin-bottom:24px}
+
+.price-box{display:flex;align-items:center;gap:14px;background:rgba(212,168,67,0.06);border:1px solid rgba(212,168,67,0.14);border-radius:12px;padding:16px 20px;margin-bottom:24px}
+.price-crossed{font-size:1.1rem;color:var(--muted);text-decoration:line-through}
+.price-main{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:700;color:var(--gold);line-height:1}
+.price-unit{font-size:1rem;color:var(--gold-2);margin-left:-4px}
+.price-info{font-size:0.72rem;color:var(--muted);line-height:1.5;margin-left:auto;text-align:right}
+.price-info strong{display:block;color:var(--success);font-size:0.8rem}
+
+.input-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.f-field label{display:block;font-size:0.68rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.f-field input,.f-field select{width:100%;background:rgba(6,13,31,0.7);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:12px 15px;color:var(--white);font-family:'Outfit',sans-serif;font-size:0.88rem;outline:none;transition:border-color 0.2s,box-shadow 0.2s;-webkit-appearance:none}
+.f-field input::placeholder{color:var(--muted)}
+.f-field input:focus,.f-field select:focus{border-color:rgba(212,168,67,0.45);box-shadow:0 0 0 3px rgba(212,168,67,0.07)}
+.f-field select option{background:var(--navy-2)}
+
+.submit-btn{width:100%;background:linear-gradient(135deg,#A67C1A,var(--gold),var(--gold-2));color:var(--navy);border:none;border-radius:11px;padding:17px;font-family:'Outfit',sans-serif;font-size:0.95rem;font-weight:700;letter-spacing:0.04em;cursor:pointer;margin-top:6px;position:relative;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;box-shadow:0 8px 28px rgba(212,168,67,0.38)}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(212,168,67,0.5)}
+.submit-btn::after{content:'';position:absolute;top:-50%;left:-70%;width:40%;height:200%;background:rgba(255,255,255,0.2);transform:skewX(-20deg);transition:left 0.6s}
+.submit-btn:hover::after{left:140%}
+
+#successMsg{display:none;margin-top:14px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:10px;padding:16px;text-align:center;color:var(--success);font-size:0.88rem;line-height:1.6;font-weight:500}
+
+.fc-trust{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:14px;font-size:0.7rem;color:var(--muted)}
+
+/* DIVIDER */
+.divider-section{position:relative;z-index:2;padding:0 60px;overflow:hidden}
+.divider-inner{max-width:1200px;margin:0 auto;height:1px;background:linear-gradient(90deg,transparent,var(--card-border),var(--gold),var(--card-border),transparent)}
+
+/* SECTION SHARED STYLES */
+section{position:relative;z-index:2}
+.s-inner{max-width:1200px;margin:0 auto;padding:0 60px}
+.s-tag{display:inline-flex;align-items:center;gap:10px;font-size:0.7rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:18px}
+.s-tag .tag-line{width:28px;height:1px}
+.s-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,3.5vw,3.2rem);font-weight:700;line-height:1.15;margin-bottom:60px;max-width:560px}
+.s-title em{font-style:italic;color:var(--gold)}
+
+/* LOGOS BAR */
+.logos-bar{padding:44px 60px;background:var(--navy-2);border-top:1px solid rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.04);position:relative;z-index:2}
+.logos-label{text-align:center;font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
+.logos-row{display:flex;justify-content:center;align-items:center;gap:52px;flex-wrap:wrap}
+.logo-pill{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:700;color:rgba(255,255,255,0.15);letter-spacing:0.06em;transition:color 0.3s;cursor:default}
+.logo-pill:hover{color:rgba(212,168,67,0.5)}
+
+/* PRODUCT SECTIONS */
+.product-section{padding:110px 0}
+.product-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.product-grid.reverse{direction:rtl}
+.product-grid.reverse > *{direction:ltr}
+
+.product-visual{position:relative}
+.visual-card{border-radius:20px;overflow:hidden;aspect-ratio:4/3;position:relative}
+.visual-gradient-pac{background:linear-gradient(135deg,var(--navy-3) 0%,var(--navy-4) 40%,rgba(14,165,160,0.15) 100%)}
+.visual-gradient-sol{background:linear-gradient(135deg,var(--navy-3) 0%,var(--navy-4) 40%,rgba(249,115,22,0.15) 100%)}
+.visual-card-inner{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+.visual-icon{font-size:5rem;filter:drop-shadow(0 0 40px rgba(212,168,67,0.3))}
+.visual-label{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:rgba(255,255,255,0.6)}
+.visual-border{position:absolute;inset:0;border-radius:20px;border:1px solid var(--card-border)}
+
+.visual-float-badge{position:absolute;bottom:-20px;right:-20px;background:linear-gradient(135deg,var(--gold),var(--gold-2));color:var(--navy);border-radius:14px;padding:16px 22px;font-family:'Cormorant Garamond',serif;box-shadow:0 20px 40px rgba(0,0,0,0.4)}
+.vfb-num{font-size:2.4rem;font-weight:700;line-height:1}
+.vfb-sub{font-size:0.72rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-top:2px}
+
+.visual-float-badge-2{position:absolute;top:-20px;left:-20px;background:var(--navy-3);border:1px solid var(--card-border);border-radius:12px;padding:14px 18px;box-shadow:0 16px 32px rgba(0,0,0,0.4)}
+.vfb2-num{font-size:1.8rem;font-weight:700;color:var(--solar);font-family:'Cormorant Garamond',serif;line-height:1}
+.vfb2-sub{font-size:0.68rem;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-top:2px}
+
+.product-content{}
+.product-price-tag{display:inline-flex;align-items:baseline;gap:8px;background:rgba(212,168,67,0.08);border:1px solid rgba(212,168,67,0.18);border-radius:8px;padding:8px 16px;margin-bottom:24px}
+.pt-old{font-size:0.9rem;color:var(--muted);text-decoration:line-through}
+.pt-new{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--gold)}
+.pt-label{font-size:0.72rem;color:var(--gold-2);font-weight:500}
+
+.product-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,2.8vw,2.8rem);font-weight:700;line-height:1.15;margin-bottom:16px}
+.product-desc{font-size:0.95rem;color:var(--off);line-height:1.7;font-weight:300;margin-bottom:32px}
+
+.features-list{display:flex;flex-direction:column;gap:12px;margin-bottom:36px}
+.feat-item{display:flex;align-items:flex-start;gap:12px;font-size:0.88rem;color:var(--off);line-height:1.5}
+.feat-icon{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;flex-shrink:0;margin-top:1px}
+.feat-icon.gold{background:rgba(212,168,67,0.15);color:var(--gold)}
+.feat-icon.solar{background:rgba(249,115,22,0.12);color:var(--solar)}
+
+.product-cta{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#A67C1A,var(--gold),var(--gold-2));color:var(--navy);border:none;border-radius:11px;padding:16px 32px;font-family:'Outfit',sans-serif;font-size:0.88rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;box-shadow:0 8px 24px rgba(212,168,67,0.32);text-decoration:none}
+.product-cta:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(212,168,67,0.45)}
+.product-cta svg{width:16px;height:16px;transition:transform 0.2s}
+.product-cta:hover svg{transform:translateX(3px)}
+
+/* NUMBERS BAND */
+.numbers-band{padding:80px 0;background:linear-gradient(135deg,var(--navy-2),var(--navy-3));border-top:1px solid var(--card-border);border-bottom:1px solid var(--card-border);position:relative;z-index:2;overflow:hidden}
+.numbers-band::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(212,168,67,0.03) 0px,rgba(212,168,67,0.03) 1px,transparent 1px,transparent 120px)}
+.nb-inner{max-width:1200px;margin:0 auto;padding:0 60px;display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.nb-item{text-align:center;padding:0 30px;position:relative}
+.nb-item+.nb-item::before{content:'';position:absolute;left:0;top:15%;height:70%;width:1px;background:var(--card-border)}
+.nb-num{font-family:'Cormorant Garamond',serif;font-size:3.4rem;font-weight:700;line-height:1;margin-bottom:8px}
+.nb-label{font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);line-height:1.4}
+
+/* PROCESS SECTION */
+.process-section{padding:110px 0;background:var(--navy)}
+.process-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:0;position:relative;margin-top:60px}
+.process-steps::before{content:'';position:absolute;top:30px;left:10%;width:80%;height:1px;background:linear-gradient(90deg,transparent,rgba(212,168,67,0.2),rgba(212,168,67,0.4),rgba(212,168,67,0.2),transparent)}
+.ps-item{text-align:center;padding:0 12px;position:relative}
+.ps-num{width:60px;height:60px;border-radius:50%;border:1px solid rgba(212,168,67,0.3);background:var(--navy-2);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--gold);position:relative;z-index:1;transition:all 0.3s}
+.ps-item:hover .ps-num{background:rgba(212,168,67,0.1);border-color:var(--gold);box-shadow:0 0 30px rgba(212,168,67,0.2)}
+.ps-title{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:700;margin-bottom:8px}
+.ps-desc{font-size:0.78rem;color:var(--muted);line-height:1.55}
+
+/* TESTIMONIALS */
+.testi-section{padding:110px 0;background:var(--navy-2)}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:60px}
+.testi-card{background:var(--navy-3);border:1px solid var(--card-border);border-radius:18px;padding:32px 28px;position:relative;overflow:hidden;transition:transform 0.3s,border-color 0.3s}
+.testi-card:hover{transform:translateY(-4px);border-color:rgba(212,168,67,0.25)}
+.testi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(212,168,67,0.4),transparent);opacity:0;transition:opacity 0.3s}
+.testi-card:hover::before{opacity:1}
+.testi-product-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(212,168,67,0.08);border:1px solid rgba(212,168,67,0.15);border-radius:100px;padding:4px 10px;font-size:0.65rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+.testi-q{font-family:'Cormorant Garamond',serif;font-size:2.5rem;color:rgba(212,168,67,0.15);line-height:1;margin-bottom:8px}
+.testi-text{font-size:0.87rem;color:var(--off);line-height:1.65;margin-bottom:20px;font-weight:300}
+.testi-author{display:flex;align-items:center;gap:12px}
+.testi-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--navy-4));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.82rem;color:var(--navy);flex-shrink:0}
+.testi-name{font-size:0.84rem;font-weight:600}
+.testi-city{font-size:0.72rem;color:var(--muted)}
+.testi-stars{color:var(--gold);font-size:0.72rem;margin-bottom:3px;letter-spacing:2px}
+
+/* FINAL CTA */
+.final-cta{padding:120px 0;position:relative;overflow:hidden}
+.final-cta::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(212,168,67,0.07) 0%,transparent 65%)}
+.final-cta-inner{max-width:800px;margin:0 auto;padding:0 60px;text-align:center}
+.fct-h{font-family:'Cormorant Garamond',serif;font-size:clamp(2.4rem,4vw,4rem);font-weight:700;line-height:1.15;margin-bottom:20px}
+.fct-h em{font-style:italic;color:var(--gold)}
+.fct-sub{font-size:1rem;color:var(--off);margin-bottom:44px;font-weight:300;line-height:1.6}
+.fct-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.btn-primary{background:linear-gradient(135deg,#A67C1A,var(--gold),var(--gold-2));color:var(--navy);border:none;border-radius:12px;padding:18px 40px;font-family:'Outfit',sans-serif;font-size:0.9rem;font-weight:700;letter-spacing:0.05em;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;box-shadow:0 8px 28px rgba(212,168,67,0.38);text-decoration:none;display:inline-block}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 44px rgba(212,168,67,0.48)}
+.btn-secondary{background:transparent;color:var(--gold);border:1px solid rgba(212,168,67,0.35);border-radius:12px;padding:18px 40px;font-family:'Outfit',sans-serif;font-size:0.9rem;font-weight:600;letter-spacing:0.05em;cursor:pointer;transition:all 0.2s;text-decoration:none;display:inline-block}
+.btn-secondary:hover{background:rgba(212,168,67,0.07);border-color:var(--gold)}
+
+/* FOOTER */
+footer{background:var(--navy-2);border-top:1px solid var(--card-border);padding:50px 60px;position:relative;z-index:2}
+.footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:var(--gold);margin-bottom:8px}
+.footer-logo span{color:var(--white);font-weight:300}
+.footer-tagline{font-size:0.78rem;color:var(--muted)}
+.footer-links{display:flex;gap:28px;flex-wrap:wrap}
+.footer-links a{font-size:0.75rem;color:var(--muted);text-decoration:none;transition:color 0.2s;letter-spacing:0.04em}
+.footer-links a:hover{color:var(--gold)}
+.footer-copy{max-width:1200px;margin:24px auto 0;padding-top:24px;border-top:1px solid rgba(255,255,255,0.04);font-size:0.72rem;color:var(--muted);text-align:center}
+
+/* FLOATING */
+.float-counter{position:fixed;bottom:28px;right:28px;background:var(--navy-3);border:1px solid rgba(212,168,67,0.2);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:10px;z-index:100;box-shadow:0 20px 40px rgba(0,0,0,0.5);animation:slide-in-r 0.6s 1.2s ease both;backdrop-filter:blur(10px)}
+@keyframes slide-in-r{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+.fc-dot{width:8px;height:8px;border-radius:50%;background:var(--success);animation:blink 2s ease-in-out infinite;flex-shrink:0}
+.fc-text{font-size:0.76rem;color:var(--off)}
+.fc-text strong{color:var(--gold)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* ANIMATIONS */
+@keyframes rise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.6s ease,transform 0.6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* TOP PADDING FOR FIXED NAV */
+.hero{padding-top:150px}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  nav{padding:0 24px}
+  .nav-links{display:none}
+  .hero{padding:120px 24px 60px}
+  .hero-inner,.product-grid,.footer-inner{grid-template-columns:1fr;gap:48px}
+  .product-grid.reverse{direction:ltr}
+  .s-inner{padding:0 24px}
+  .nb-inner{grid-template-columns:1fr 1fr;gap:32px}
+  .nb-item+.nb-item::before{display:none}
+  .process-steps{grid-template-columns:1fr 1fr;gap:32px}
+  .process-steps::before{display:none}
+  .testi-grid{grid-template-columns:1fr}
+  .logos-bar,.divider-section{padding-left:24px;padding-right:24px}
+  footer{padding:40px 24px}
+  .final-cta-inner{padding:0 24px}
+  .row-2{grid-template-columns:1fr}
+  .float-counter{bottom:16px;right:16px}
+  .form-card{padding:32px 24px}
+  body{cursor:auto}
+  .cursor,.cursor-ring{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  ⚡ Offre d'État limitée — <em>Places restantes dans votre région : 38</em> — PAC & Panneaux solaires à <em>1€</em> seulement
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo">Énergie<span>Premium</span></a>
+  <ul class="nav-links">
+    <li><a href="#pac">Pompe à chaleur</a></li>
+    <li><a href="#solaire">Panneaux solaires</a></li>
+    <li><a href="#processus">Comment ça marche</a></li>
+    <li><a href="#avis">Avis clients</a></li>
+  </ul>
+  <button class="nav-cta" onclick="document.getElementById('leadForm').scrollIntoView({behavior:'smooth'})">Devis gratuit</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-grid-lines"></div>
+    <div class="hero-bg-orb orb-1"></div>
+    <div class="hero-bg-orb orb-2"></div>
+    <div class="hero-bg-orb orb-3"></div>
+  </div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-eyebrow">
+        <div class="eyebrow-line"></div>
+        <div class="eyebrow-text">MaPrimeRénov' 2025 · Programme d'État</div>
+      </div>
+      <h1 class="hero-h1">
+        <span class="line-thin">Chauffez & produisez</span>
+        <span class="line-gold">votre énergie</span>
+        <span class="line-white">à 1€ symbolique</span>
+      </h1>
+      <p class="hero-desc">
+        Cumulez <strong>PAC + Panneaux photovoltaïques</strong> grâce aux aides gouvernementales. Jusqu'à <strong>20 000€ de subventions</strong> pour transformer votre maison en centrale énergétique autonome.
+      </p>
+      <div class="hero-badges">
+        <div class="badge"><span class="b-icon">🏆</span> Certifié RGE</div>
+        <div class="badge"><span class="b-icon">🛡️</span> Garantie décennale</div>
+        <div class="badge"><span class="b-icon">⚡</span> Installation 24h</div>
+        <div class="badge"><span class="b-icon">📋</span> Dossier géré à 100%</div>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat"><div class="hstat-num" style="color:var(--gold)">20K€</div><div class="hstat-label">d'aides max</div></div>
+        <div class="hstat"><div class="hstat-num" style="color:var(--solar)">-85%</div><div class="hstat-label">facture énergie</div></div>
+        <div class="hstat"><div class="hstat-num" style="color:var(--teal)">4 800+</div><div class="hstat-label">foyers équipés</div></div>
+      </div>
+    </div>
+
+    <div class="hero-form-wrap">
+      <div class="form-card">
+        <!-- TABS -->
+        <div class="form-offer-toggle">
+          <button class="offer-tab active" onclick="switchTab(this,'pac')">🌡️ PAC seule</button>
+          <button class="offer-tab" onclick="switchTab(this,'sol')">☀️ Solaire seul</button>
+          <button class="offer-tab" onclick="switchTab(this,'duo')">⚡ Pack Duo</button>
+        </div>
+
+        <div class="fc-title" id="formTitle">Vérifier mon éligibilité — PAC</div>
+        <div class="fc-sub">Gratuit · Sans engagement · Réponse sous 48h</div>
+
+        <div class="price-box">
+          <span class="price-crossed" id="priceOld">8 600 €</span>
+          <span class="price-main" id="priceMain">1</span>
+          <span class="price-unit">€</span>
+          <div class="price-info">
+            <strong>✓ Éligible MaPrimeRénov'</strong>
+            Reste à charge<br>après aides d'État
+          </div>
+        </div>
+
+        <form id="leadForm">
+          <input type="hidden" name="offre" id="hiddenOffre" value="PAC seule" />
+          <div class="input-grid">
+            <div class="row-2">
+              <div class="f-field"><label>Prénom</label><input type="text" name="prenom" placeholder="Jean" required /></div>
+              <div class="f-field"><label>Nom</label><input type="text" name="nom" placeholder="Dupont" /></div>
+            </div>
+            <div class="f-field"><label>Téléphone</label><input type="tel" name="telephone" placeholder="06 XX XX XX XX" required /></div>
+            <div class="f-field"><label>Code postal</label><input type="text" name="code_postal" placeholder="75000" required /></div>
+            <div class="row-2">
+              <div class="f-field">
+                <label>Type de logement</label>
+                <select name="type_logement">
+                  <option value="">Sélectionnez...</option>
+                  <option>Maison individuelle</option>
+                  <option>Appartement</option>
+                  <option>Maison de ville</option>
+                </select>
+              </div>
+              <div class="f-field">
+                <label>Revenus du foyer</label>
+                <select name="revenus">
+                  <option value="">Sélectionnez...</option>
+                  <option>- de 21 000 €/an</option>
+                  <option>21 000 – 30 000 €/an</option>
+                  <option>30 000 – 45 000 €/an</option>
+                  <option>+ de 45 000 €/an</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="submit-btn">Obtenir mon devis gratuit →</button>
+        </form>
+
+        <div id="successMsg">
+          ✅ Demande bien reçue !<br>Un conseiller expert vous rappelle sous 48h.
+        </div>
+
+        <div class="fc-trust">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Données 100% sécurisées · Aucun engagement
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGOS -->
+<div class="logos-bar">
+  <div class="logos-label">Certifications officielles & partenaires gouvernementaux</div>
+  <div class="logos-row">
+    <div class="logo-pill">ANAH</div>
+    <div class="logo-pill">MaPrimeRénov'</div>
+    <div class="logo-pill">RGE Qualibat</div>
+    <div class="logo-pill">CEE</div>
+    <div class="logo-pill">QualiPV</div>
+    <div class="logo-pill">Eco Artisan</div>
+    <div class="logo-pill">Min. Transition Écologique</div>
+  </div>
+</div>
+
+<!-- NUMBERS BAND -->
+<div class="numbers-band">
+  <div class="nb-inner">
+    <div class="nb-item reveal">
+      <div class="nb-num" style="background:linear-gradient(135deg,var(--gold),var(--gold-2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">20 000€</div>
+      <div class="nb-label">d'aides cumulables<br>PAC + Solaire</div>
+    </div>
+    <div class="nb-item reveal">
+      <div class="nb-num" style="color:var(--solar)">-85%</div>
+      <div class="nb-label">de réduction<br>sur vos factures</div>
+    </div>
+    <div class="nb-item reveal">
+      <div class="nb-num" style="color:var(--teal)">4 800+</div>
+      <div class="nb-label">foyers équipés<br>en France</div>
+    </div>
+    <div class="nb-item reveal">
+      <div class="nb-num" style="color:var(--white)">48h</div>
+      <div class="nb-label">pour recevoir<br>votre devis</div>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT: PAC -->
+<section id="pac" class="product-section">
+  <div class="s-inner">
+    <div class="product-grid">
+      <div class="product-visual reveal">
+        <div class="visual-card visual-gradient-pac">
+          <div class="visual-card-inner">
+            <div class="visual-icon">🌡️</div>
+            <div class="visual-label">Pompe à Chaleur</div>
+          </div>
+          <div class="visual-border"></div>
+        </div>
+        <div class="visual-float-badge">
+          <div class="vfb-num">-70%</div>
+          <div class="vfb-sub">facture chauffage</div>
+        </div>
+        <div class="visual-float-badge-2">
+          <div class="vfb2-num" style="color:var(--teal)">A+++</div>
+          <div class="vfb2-sub">classe énergie</div>
+        </div>
+      </div>
+
+      <div class="product-content reveal">
+        <div class="s-tag">
+          <div class="tag-line" style="background:linear-gradient(90deg,transparent,var(--teal))"></div>
+          <span style="color:var(--teal)">Pompe à chaleur</span>
+        </div>
+        <div class="product-price-tag">
+          <span class="pt-old">8 600 €</span>
+          <span class="pt-new">1 €</span>
+          <span class="pt-label">— après aides d'État</span>
+        </div>
+        <h2 class="product-title">Chauffage & climatisation<br>à énergie renouvelable</h2>
+        <p class="product-desc">La pompe à chaleur air/air ou air/eau extrait l'énergie naturelle présente dans l'air pour chauffer votre maison l'hiver et la rafraîchir l'été. Un seul équipement, deux usages, zéro combustion.</p>
+        <div class="features-list">
+          <div class="feat-item"><div class="feat-icon gold">✓</div><span>Économies de <strong>40 à 70%</strong> sur votre facture de chauffage dès le premier hiver</span></div>
+          <div class="feat-item"><div class="feat-icon gold">✓</div><span>Climatisation réversible incluse — confort été sans équipement supplémentaire</span></div>
+          <div class="feat-item"><div class="feat-icon gold">✓</div><span>COP jusqu'à 4,5 : produit 4,5 kWh de chaleur pour 1 kWh consommé</span></div>
+          <div class="feat-item"><div class="feat-icon gold">✓</div><span>Zéro émission CO₂ — DPE amélioré, valeur immobilière augmentée</span></div>
+          <div class="feat-item"><div class="feat-icon gold">✓</div><span>Installation en 1 journée par installateurs certifiés RGE · Garantie 10 ans</span></div>
+        </div>
+        <a href="#leadForm" class="product-cta" onclick="switchTabByName('pac');this.scrollIntoView=undefined;document.getElementById('leadForm').scrollIntoView({behavior:'smooth'});return false;">
+          Je veux ma PAC à 1€
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider-section"><div class="divider-inner"></div></div>
+
+<!-- PRODUCT: SOLAIRE -->
+<section id="solaire" class="product-section">
+  <div class="s-inner">
+    <div class="product-grid reverse">
+      <div class="product-visual reveal">
+        <div class="visual-card visual-gradient-sol">
+          <div class="visual-card-inner">
+            <div class="visual-icon">☀️</div>
+            <div class="visual-label">Panneaux Solaires</div>
+          </div>
+          <div class="visual-border"></div>
+        </div>
+        <div class="visual-float-badge" style="background:linear-gradient(135deg,var(--solar),var(--solar-2))">
+          <div class="vfb-num">+900€</div>
+          <div class="vfb-sub">revendu par an</div>
+        </div>
+        <div class="visual-float-badge-2">
+          <div class="vfb2-num" style="color:var(--solar)">25 ans</div>
+          <div class="vfb2-sub">de garantie</div>
+        </div>
+      </div>
+
+      <div class="product-content reveal">
+        <div class="s-tag">
+          <div class="tag-line" style="background:linear-gradient(90deg,transparent,var(--solar))"></div>
+          <span style="color:var(--solar)">Panneaux photovoltaïques</span>
+        </div>
+        <div class="product-price-tag" style="border-color:rgba(249,115,22,0.25);background:rgba(249,115,22,0.07)">
+          <span class="pt-old">12 000 €</span>
+          <span class="pt-new" style="color:var(--solar)">1 €</span>
+          <span class="pt-label" style="color:var(--solar-2)">— après aides d'État</span>
+        </div>
+        <h2 class="product-title">Produisez votre propre<br>électricité solaire</h2>
+        <p class="product-desc">Transformez votre toit en centrale électrique. Autoconsommez l'énergie que vous produisez et revendez le surplus à EDF. Amortissement en 5 à 8 ans, puis production gratuite pendant 25 ans.</p>
+        <div class="features-list">
+          <div class="feat-item"><div class="feat-icon solar">✓</div><span><strong>Jusqu'à 100%</strong> d'autoconsommation avec batterie de stockage incluse dans l'offre premium</span></div>
+          <div class="feat-item"><div class="feat-icon solar">✓</div><span>Revente du surplus à EDF OA : jusqu'à <strong>900€ de revenus annuels</strong> garantis 20 ans</span></div>
+          <div class="feat-item"><div class="feat-icon solar">✓</div><span>Panneaux monocristallins haute performance — rendement 22% garanti</span></div>
+          <div class="feat-item"><div class="feat-icon solar">✓</div><span>Monitoring en temps réel via application mobile — suivez votre production</span></div>
+          <div class="feat-item"><div class="feat-icon solar">✓</div><span>Installation certifiée QualiPV · Garantie produit 25 ans · SAV national</span></div>
+        </div>
+        <a href="#leadForm" class="product-cta" style="background:linear-gradient(135deg,#9A3D0A,var(--solar),var(--solar-2));box-shadow:0 8px 24px rgba(249,115,22,0.32)" onclick="switchTabByName('sol');document.getElementById('leadForm').scrollIntoView({behavior:'smooth'});return false;">
+          Je veux mes panneaux à 1€
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="processus" class="process-section">
+  <div class="s-inner">
+    <div class="s-tag">
+      <div class="tag-line" style="background:linear-gradient(90deg,transparent,var(--gold))"></div>
+      <span style="color:var(--gold)">La démarche</span>
+    </div>
+    <h2 class="s-title">De zéro à votre maison<br>éco-énergétique en <em>5 étapes</em></h2>
+    <div class="process-steps">
+      <div class="ps-item reveal">
+        <div class="ps-num">1</div>
+        <div class="ps-title">Simulation</div>
+        <p class="ps-desc">Remplissez le formulaire en 2 minutes. Vérification instantanée de votre éligibilité.</p>
+      </div>
+      <div class="ps-item reveal">
+        <div class="ps-num">2</div>
+        <div class="ps-title">Audit gratuit</div>
+        <p class="ps-desc">Un expert certifié se déplace chez vous. Étude personnalisée de votre logement.</p>
+      </div>
+      <div class="ps-item reveal">
+        <div class="ps-num">3</div>
+        <div class="ps-title">Devis & aides</div>
+        <p class="ps-desc">Nous montons votre dossier MaPrimeRénov', CEE et TVA réduite. Zéro paperasse.</p>
+      </div>
+      <div class="ps-item reveal">
+        <div class="ps-num">4</div>
+        <div class="ps-title">Installation</div>
+        <p class="ps-desc">Pose par nos installateurs RGE en 1 à 2 jours. Mise en service immédiate.</p>
+      </div>
+      <div class="ps-item reveal">
+        <div class="ps-num">5</div>
+        <div class="ps-title">Suivi & SAV</div>
+        <p class="ps-desc">Accompagnement post-installation, monitoring et service après-vente national.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="avis" class="testi-section">
+  <div class="s-inner">
+    <div class="s-tag">
+      <div class="tag-line" style="background:linear-gradient(90deg,transparent,var(--gold))"></div>
+      <span style="color:var(--gold)">Témoignages clients</span>
+    </div>
+    <h2 class="s-title">Ils ont fait confiance,<br>voici ce qu'ils <em>disent</em></h2>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <div class="testi-product-tag">🌡️ PAC air/eau</div>
+        <div class="testi-q">"</div>
+        <p class="testi-text">Ma facture de gaz est passée de 220€ à 48€ par mois. L'équipe a géré toute l'administratif, je n'ai eu qu'à signer et payer 1€. Incroyable service.</p>
+        <div class="testi-author">
+          <div class="testi-av">ML</div>
+          <div>
+            <div class="testi-stars">★★★★★</div>
+            <div class="testi-name">Marie-Louise D.</div>
+            <div class="testi-city">Toulouse, 31 · installée oct. 2024</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal">
+        <div class="testi-product-tag">☀️ Pack solaire 6kWc</div>
+        <div class="testi-q">"</div>
+        <p class="testi-text">Production de 7 200 kWh la première année. Je revends le surplus 870€ à EDF et mon électricité me coûte presque rien. Retour sur investissement déjà amorcé.</p>
+        <div class="testi-author">
+          <div class="testi-av">PC</div>
+          <div>
+            <div class="testi-stars">★★★★★</div>
+            <div class="testi-name">Pierre-Claude M.</div>
+            <div class="testi-city">Montpellier, 34 · installé juin 2024</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal">
+        <div class="testi-product-tag">⚡ Pack Duo PAC + Solaire</div>
+        <div class="testi-q">"</div>
+        <p class="testi-text">J'ai pris le pack complet PAC + panneaux. Mon DPE est passé de F à B+. La valeur de ma maison a augmenté de 18 000€ selon l'estimation notariale. Investissement extraordinaire.</p>
+        <div class="testi-author">
+          <div class="testi-av">SB</div>
+          <div>
+            <div class="testi-stars">★★★★★</div>
+            <div class="testi-name">Sylvie B.</div>
+            <div class="testi-city">Lyon, 69 · installée janv. 2025</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="final-cta-inner">
+    <h2 class="fct-h">Ne laissez pas cette<br>opportunité <em>vous échapper</em></h2>
+    <p class="fct-sub">Les fonds gouvernementaux sont alloués par région et s'épuisent chaque mois. Vérifiez dès maintenant si votre dossier est encore éligible.</p>
+    <div class="fct-buttons">
+      <a href="#leadForm" class="btn-primary" onclick="document.getElementById('leadForm').scrollIntoView({behavior:'smooth'});return false;">Vérifier mon éligibilité gratuitement</a>
+      <a href="tel:+33800000000" class="btn-secondary">📞 Appel gratuit</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">Énergie<span>Premium</span></div>
+      <div class="footer-tagline">Solutions éco-énergétiques certifiées RGE · Partenaire officiel MaPrimeRénov'</div>
+    </div>
+    <div class="footer-links">
+      <a href="#">Mentions légales</a>
+      <a href="#">Confidentialité</a>
+      <a href="#">CGV</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+  <div class="footer-copy">© 2025 ÉnergiePremium · Sous réserve d'éligibilité · Aides soumises à conditions de ressources et d'occupation · Certifié RGE</div>
+</footer>
+
+<!-- FLOATING COUNTER -->
+<div class="float-counter">
+  <div class="fc-dot"></div>
+  <div class="fc-text"><strong id="counter">31</strong> personnes consultent cette page</div>
+</div>
+
+<script>
+/* ── CUSTOM CURSOR ── */
+const cur = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+function animRing(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing)}
+animRing();
+document.querySelectorAll('a,button,.offer-tab').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.transform='translate(-50%,-50%) scale(2.5)';ring.style.transform='translate(-50%,-50%) scale(1.4)'});
+  el.addEventListener('mouseleave',()=>{cur.style.transform='translate(-50%,-50%) scale(1)';ring.style.transform='translate(-50%,-50%) scale(1)'});
+});
+
+/* ── NAV SCROLL ── */
+window.addEventListener('scroll',()=>{
+  document.getElementById('mainNav').classList.toggle('scrolled',window.scrollY>60);
+});
+
+/* ── TABS ── */
+const tabData={
+  pac:{title:'Vérifier mon éligibilité — PAC',old:'8 600 €',offre:'PAC seule'},
+  sol:{title:'Vérifier mon éligibilité — Solaire',old:'12 000 €',offre:'Panneaux solaires'},
+  duo:{title:'Vérifier mon éligibilité — Pack Duo',old:'20 600 €',offre:'Pack Duo PAC + Solaire'}
+};
+function switchTab(btn,key){
+  document.querySelectorAll('.offer-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  const d=tabData[key];
+  document.getElementById('formTitle').textContent=d.title;
+  document.getElementById('priceOld').textContent=d.old;
+  document.getElementById('hiddenOffre').value=d.offre;
+}
+function switchTabByName(key){
+  const tabs=document.querySelectorAll('.offer-tab');
+  const keys=['pac','sol','duo'];
+  const idx=keys.indexOf(key);
+  if(idx>=0)switchTab(tabs[idx],key);
+}
+
+/* ── ZAPIER FORM ── */
+document.getElementById("leadForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  const formData = new FormData(this);
+  fetch("https://hooks.zapier.com/hooks/catch/26684326/up47hdl/", {
+    method: "POST",
+    body: formData
+  })
+  .then(() => {
+    document.getElementById("successMsg").style.display = "block";
+    document.getElementById("leadForm").reset();
+  })
+  .catch(() => {
+    alert("Erreur d'envoi. Vérifiez votre webhook Zapier.");
+  });
+});
+
+/* ── COUNTER ── */
+const cEl=document.getElementById('counter');
+let base=31;
+setInterval(()=>{const d=Math.random()<0.5?-1:1;base=Math.max(18,Math.min(52,base+d));cEl.textContent=base},3800);
+
+/* ── REVEAL ON SCROLL ── */
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');const i=Array.from(e.target.parentElement.children).indexOf(e.target);e.target.style.transitionDelay=(i*0.08)+'s'}});
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

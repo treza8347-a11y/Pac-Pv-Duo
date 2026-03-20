@@ -728,12 +728,8 @@ footer{background:var(--navy-2);border-top:1px solid var(--card-border);padding:
 </div>
 
 <script>
-  // ════════════════════════════════════════
-  // ⚙️  VOTRE URL APPS SCRIPT
-  // ════════════════════════════════════════
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxqHbRJZMmuOtMNfXqxPJhVVfm3NXKxujKFgcAJGSoHW2MYQDn6WpirPgn-yoJgq0Za/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx5Z0fqAnNaSXujhL-Mlh3llbCk-0_6WGv5jaHH6Mrj0ifsOfhhesFiVhtQZnIKSQjR/exec';
 
-  // ── TABS ──
   let currentOffre = 'PAC seule';
 
   const tabData = {
@@ -756,23 +752,23 @@ footer{background:var(--navy-2);border-top:1px solid var(--card-border);padding:
   function switchTabByName(key) {
     const tabs = document.querySelectorAll('.offer-tab');
     const keys = ['pac', 'sol', 'duo'];
-    const idx  = keys.indexOf(key);
+    const idx = keys.indexOf(key);
     if (idx >= 0) switchTab(tabs[idx], key);
   }
 
-  // ── FORMULAIRE → GOOGLE SHEETS ──
   document.getElementById("leadForm").addEventListener("submit", function(e) {
     e.preventDefault();
 
-    // ✅ Correct — le bouton s'appelle submit-btn dans ce fichier
+    // ✅ submit-btn — nom correct pour CE fichier
     const btn = this.querySelector('.submit-btn');
-    btn.textContent = '⏳ Envoi en cours...';
-    btn.disabled = true;
+    if (btn) {
+      btn.textContent = '⏳ Envoi en cours...';
+      btn.disabled = true;
+    }
 
-    // Garantir la valeur de l'offre active
+    // Forcer la valeur de l'offre
     document.getElementById('hiddenOffre').value = currentOffre;
 
-    // FormData lit tous les champs name= du formulaire automatiquement
     const formData = new FormData(this);
 
     fetch(SCRIPT_URL, {
@@ -786,13 +782,18 @@ footer{background:var(--navy-2);border-top:1px solid var(--card-border);padding:
         '✅ Demande reçue pour <strong>' + currentOffre + '</strong> !<br>Un conseiller vous rappelle sous 48h.';
       this.reset();
       document.getElementById('hiddenOffre').value = currentOffre;
-      btn.textContent = 'Obtenir mon devis gratuit →';
-      btn.disabled = false;
+      if (btn) {
+        btn.textContent = 'Obtenir mon devis gratuit →';
+        btn.disabled = false;
+      }
     })
-    .catch(() => {
+    .catch(function(err) {
+      console.error('Erreur fetch:', err);
       alert("Erreur d'envoi. Veuillez réessayer.");
-      btn.textContent = 'Obtenir mon devis gratuit →';
-      btn.disabled = false;
+      if (btn) {
+        btn.textContent = 'Obtenir mon devis gratuit →';
+        btn.disabled = false;
+      }
     });
   });
 
@@ -801,7 +802,7 @@ footer{background:var(--navy-2);border-top:1px solid var(--card-border);padding:
     document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 60);
   });
 
-  // ── COMPTEUR SOCIAL PROOF ──
+  // ── COMPTEUR ──
   const cEl = document.getElementById('counter');
   let base = 31;
   setInterval(() => {
@@ -810,7 +811,7 @@ footer{background:var(--navy-2);border-top:1px solid var(--card-border);padding:
     cEl.textContent = base;
   }, 3800);
 
-  // ── REVEAL AU SCROLL ──
+  // ── REVEAL SCROLL ──
   const obs = new IntersectionObserver(entries => {
     entries.forEach(e => {
       if (e.isIntersecting) {

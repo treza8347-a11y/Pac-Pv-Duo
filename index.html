@@ -412,9 +412,39 @@ footer{background:var(--navy-2);border-top:1px solid var(--card-border);padding:
 </div>
 
 <script>
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxGx2ByS4ruQxlpq-B5k6FLMYfg-NkD0-X-6_mPsAXKbx7sEjGVkmcA9snB8TPL9Uyg/exec';
-  // ↑ Remplacez par votre URL Apps Script
+  // ════════════════════════════════════════════════
+  // ⚙️  REMPLACEZ PAR VOTRE NOUVELLE URL APPS SCRIPT
+  // ════════════════════════════════════════════════
+  const SCRIPT_URL = 'VOTRE_URL_ICI';
 
+  // ── TABS ──
+  let currentOffre = 'PAC seule';
+  const tabData = {
+    pac: { title: 'Vérifier mon éligibilité — PAC',      old: '8 600 €',  offre: 'PAC seule' },
+    sol: { title: 'Vérifier mon éligibilité — Solaire',  old: '12 000 €', offre: 'Panneaux solaires' },
+    duo: { title: 'Vérifier mon éligibilité — Pack Duo', old: '20 600 €', offre: 'Pack Duo PAC + Solaire' }
+  };
+
+  function switchTab(btn, key) {
+    document.querySelectorAll('.offer-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    const d = tabData[key];
+    currentOffre = d.offre;
+    document.getElementById('hiddenOffre').value = currentOffre;
+    document.getElementById('formTitle').textContent = d.title;
+    document.getElementById('priceOld').textContent = d.old;
+    document.getElementById('selectedOffer').textContent = '✓ Offre : ' + currentOffre;
+  }
+
+  function switchTabByName(key) {
+    const tabs = document.querySelectorAll('.offer-tab');
+    const keys = ['pac', 'sol', 'duo'];
+    const idx = keys.indexOf(key);
+    if (idx >= 0) switchTab(tabs[idx], key);
+  }
+
+  // ── FORMULAIRE → GOOGLE SHEETS ──
+  // Même méthode exacte que le projet qui marche
   document.getElementById("leadForm").addEventListener("submit", function(e) {
     e.preventDefault();
 
@@ -422,52 +452,58 @@ footer{background:var(--navy-2);border-top:1px solid var(--card-border);padding:
     btn.textContent = '⏳ Envoi en cours...';
     btn.disabled = true;
 
-    // ✅ Envoyer en FormData et non en JSON
-    // Google Apps Script lit parfaitement FormData via e.parameter
+    // Forcer l'offre active
+    document.getElementById('hiddenOffre').value = currentOffre;
+
+    // FormData — même méthode que le projet qui marche
     const formData = new FormData(this);
 
     fetch(SCRIPT_URL, {
       method: 'POST',
       mode:   'no-cors',
-      body:   formData       // ← FormData directement, pas JSON
+      body:   formData
     })
     .then(() => {
       document.getElementById("successMsg").style.display = "block";
+      document.getElementById("successMsg").innerHTML =
+        '✅ Demande reçue pour <strong>' + currentOffre + '</strong> !<br>Un conseiller vous rappelle sous 48h.';
       this.reset();
-      btn.textContent = 'Je vérifie mon éligibilité gratuitement →';
+      document.getElementById('hiddenOffre').value = currentOffre;
+      btn.textContent = 'Obtenir mon devis gratuit →';
       btn.disabled = false;
     })
     .catch(() => {
       alert("Erreur d'envoi. Veuillez réessayer.");
-      btn.textContent = 'Je vérifie mon éligibilité gratuitement →';
+      btn.textContent = 'Obtenir mon devis gratuit →';
       btn.disabled = false;
     });
   });
 
-  // ── COMPTEUR SOCIAL PROOF ──
-  const counterEl = document.getElementById('counter');
-  let base = 23;
-  setInterval(() => {
-    const delta = Math.random() < 0.5 ? -1 : 1;
-    base = Math.max(14, Math.min(41, base + delta));
-    counterEl.textContent = base;
-  }, 4200);
+  // ── NAV SCROLL ──
+  window.addEventListener('scroll', () => {
+    document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 60);
+  });
 
-  // ── ANIMATIONS SCROLL ──
-  const observer = new IntersectionObserver((entries) => {
+  // ── COMPTEUR ──
+  const cEl = document.getElementById('counter');
+  let base = 31;
+  setInterval(() => {
+    const d = Math.random() < 0.5 ? -1 : 1;
+    base = Math.max(18, Math.min(52, base + d));
+    cEl.textContent = base;
+  }, 3800);
+
+  // ── REVEAL SCROLL ──
+  const obs = new IntersectionObserver(entries => {
     entries.forEach(e => {
       if (e.isIntersecting) {
-        e.target.style.opacity = '1';
-        e.target.style.transform = 'translateY(0)';
+        const i = Array.from(e.target.parentElement.children).indexOf(e.target);
+        e.target.style.transitionDelay = (i * 0.08) + 's';
+        e.target.classList.add('visible');
       }
     });
   }, { threshold: 0.1 });
-  document.querySelectorAll('.card, .testi-card, .step').forEach((el, i) => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(24px)';
-    el.style.transition = `opacity 0.5s ${i * 0.08}s ease, transform 0.5s ${i * 0.08}s ease`;
-    observer.observe(el);
-  });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 </script>
 </body>
 </html>

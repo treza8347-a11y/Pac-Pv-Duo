@@ -756,45 +756,82 @@ footer{background:var(--navy-2);border-top:1px solid var(--card-border);padding:
     if (idx >= 0) switchTab(tabs[idx], key);
   }
 
-  document.getElementById("leadForm").addEventListener("submit", function(e) {
+  // ── IFRAME INVISIBLE ──────────────────────────────
+  // Crée une iframe cachée pour recevoir la réponse
+  // sans recharger la page et sans blocage CORS
+  function createHiddenIframe() {
+    let iframe = document.getElementById('_submit_frame');
+    if (!iframe) {
+      iframe = document.createElement('iframe');
+      iframe.id = '_submit_frame';
+      iframe.name = '_submit_frame';
+      iframe.style.cssText = 'display:none;width:0;height:0;border:0;position:absolute;';
+      document.body.appendChild(iframe);
+    }
+    return iframe;
+  }
+
+  document.getElementById('leadForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
-    // ✅ submit-btn — nom correct pour CE fichier
     const btn = this.querySelector('.submit-btn');
     if (btn) {
       btn.textContent = '⏳ Envoi en cours...';
       btn.disabled = true;
     }
 
-    // Forcer la valeur de l'offre
+    // Forcer l'offre active
     document.getElementById('hiddenOffre').value = currentOffre;
 
-    const formData = new FormData(this);
+    // Créer l'iframe invisible
+    createHiddenIframe();
 
-    fetch(SCRIPT_URL, {
-      method: 'POST',
-      mode:   'no-cors',
-      body:   formData
-    })
-    .then(() => {
-      document.getElementById("successMsg").style.display = "block";
-      document.getElementById("successMsg").innerHTML =
-        '✅ Demande reçue pour <strong>' + currentOffre + '</strong> !<br>Un conseiller vous rappelle sous 48h.';
-      this.reset();
-      document.getElementById('hiddenOffre').value = currentOffre;
-      if (btn) {
-        btn.textContent = 'Obtenir mon devis gratuit →';
-        btn.disabled = false;
-      }
-    })
-    .catch(function(err) {
-      console.error('Erreur fetch:', err);
-      alert("Erreur d'envoi. Veuillez réessayer.");
-      if (btn) {
-        btn.textContent = 'Obtenir mon devis gratuit →';
-        btn.disabled = false;
-      }
+    // Créer un formulaire temporaire qui pointe vers l'iframe
+    const tempForm = document.createElement('form');
+    tempForm.method = 'POST';
+    tempForm.action = SCRIPT_URL;
+    tempForm.target = '_submit_frame';
+    tempForm.style.display = 'none';
+
+    // Copier tous les champs du formulaire
+    const fields = {
+      prenom:         this.querySelector('[name="prenom"]').value.trim(),
+      nom:            this.querySelector('[name="nom"]').value.trim(),
+      telephone:      this.querySelector('[name="telephone"]').value.trim(),
+      code_postal:    this.querySelector('[name="code_postal"]').value.trim(),
+      type_logement:  this.querySelector('[name="type_logement"]').value,
+      revenus:        this.querySelector('[name="revenus"]').value,
+      offre:          currentOffre
+    };
+
+    // Ajouter les champs au formulaire temporaire
+    Object.keys(fields).forEach(function(key) {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = fields[key];
+      tempForm.appendChild(input);
     });
+
+    document.body.appendChild(tempForm);
+    tempForm.submit();
+    document.body.removeChild(tempForm);
+
+    // Afficher le succès après 1.5 secondes
+    setTimeout(function() {
+      document.getElementById('successMsg').style.display = 'block';
+      document.getElementById('successMsg').innerHTML =
+        '✅ Demande reçue pour <strong>' + currentOffre + '</strong> !<br>Un conseiller vous rappelle sous 48h.';
+
+      // Reset du formulaire
+      document.getElementById('leadForm').reset();
+      document.getElementById('hiddenOffre').value = currentOffre;
+
+      if (btn) {
+        btn.textContent = 'Obtenir mon devis gratuit →';
+        btn.disabled = false;
+      }
+    }, 1500);
   });
 
   // ── NAV SCROLL ──

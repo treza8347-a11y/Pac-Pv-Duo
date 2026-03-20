@@ -71,11 +71,12 @@ nav.scrolled{height:56px;background:rgba(6,13,31,0.98)}
 .f-field input::placeholder{color:var(--muted)}
 .f-field input:focus,.f-field select:focus{border-color:rgba(212,168,67,0.45);box-shadow:0 0 0 3px rgba(212,168,67,0.07)}
 .f-field select option{background:var(--navy-2)}
-.submit-btn{width:100%;background:linear-gradient(135deg,#A67C1A,var(--gold),var(--gold-2));color:var(--navy);border:none;border-radius:10px;padding:15px;font-family:'Outfit',sans-serif;font-size:0.9rem;font-weight:700;letter-spacing:0.04em;cursor:pointer;margin-top:4px;position:relative;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;box-shadow:0 8px 28px rgba(212,168,67,0.38)}
-.submit-btn:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(212,168,67,0.5)}
-.submit-btn:disabled{opacity:0.7;cursor:not-allowed;transform:none}
-.submit-btn::after{content:'';position:absolute;top:-50%;left:-70%;width:40%;height:200%;background:rgba(255,255,255,0.2);transform:skewX(-20deg);transition:left 0.6s}
-.submit-btn:hover::after{left:140%}
+/* ✅ BOUTON = cta-btn — même nom que le projet qui marche */
+.cta-btn{width:100%;background:linear-gradient(135deg,#A67C1A,var(--gold),var(--gold-2));color:var(--navy);border:none;border-radius:10px;padding:15px;font-family:'Outfit',sans-serif;font-size:0.9rem;font-weight:700;letter-spacing:0.04em;cursor:pointer;margin-top:4px;position:relative;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;box-shadow:0 8px 28px rgba(212,168,67,0.38)}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(212,168,67,0.5)}
+.cta-btn:disabled{opacity:0.7;cursor:not-allowed;transform:none}
+.cta-btn::after{content:'';position:absolute;top:-50%;left:-70%;width:40%;height:200%;background:rgba(255,255,255,0.2);transform:skewX(-20deg);transition:left 0.6s}
+.cta-btn:hover::after{left:140%}
 #successMsg{display:none;margin-top:12px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:9px;padding:14px;text-align:center;color:var(--success);font-size:0.84rem;line-height:1.6;font-weight:500}
 .fc-trust{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px;font-size:0.67rem;color:var(--muted)}
 section{position:relative;z-index:2}
@@ -245,7 +246,6 @@ footer{background:var(--navy-2);border-top:1px solid var(--card-border);padding:
           <div class="price-info"><strong>✓ Éligible MaPrimeRénov'</strong>Reste à charge<br>après aides d'État</div>
         </div>
 
-        <!-- FORMULAIRE PRINCIPAL -->
         <form id="leadForm">
           <input type="hidden" name="offre" id="hiddenOffre" value="PAC seule" />
           <div class="input-grid">
@@ -277,7 +277,8 @@ footer{background:var(--navy-2);border-top:1px solid var(--card-border);padding:
               </div>
             </div>
           </div>
-          <button type="submit" class="submit-btn">Obtenir mon devis gratuit →</button>
+          <!-- ✅ BOUTON cta-btn — identique au projet qui marche -->
+          <button type="submit" class="cta-btn">Obtenir mon devis gratuit →</button>
         </form>
 
         <div id="successMsg">✅ Demande bien reçue !<br>Un conseiller expert vous rappelle sous 48h.</div>
@@ -352,10 +353,10 @@ footer{background:var(--navy-2);border-top:1px solid var(--card-border);padding:
         <p class="product-desc">Transformez votre toit en centrale électrique. Autoconsommez l'énergie que vous produisez et revendez le surplus à EDF.</p>
         <div class="features-list">
           <div class="feat-item"><div class="feat-icon solar">✓</div><span><strong>Jusqu'à 100%</strong> d'autoconsommation avec batterie de stockage incluse</span></div>
-          <div class="feat-item"><div class="feat-icon solar">✓</div><span>Revente du surplus à EDF OA : jusqu'à <strong>900€ de revenus annuels</strong> garantis 20 ans</span></div>
+          <div class="feat-item"><div class="feat-icon solar">✓</div><span>Revente surplus EDF OA : jusqu'à <strong>900€/an</strong> garantis 20 ans</span></div>
           <div class="feat-item"><div class="feat-icon solar">✓</div><span>Panneaux monocristallins haute performance — rendement 22% garanti</span></div>
           <div class="feat-item"><div class="feat-icon solar">✓</div><span>Monitoring en temps réel via application mobile</span></div>
-          <div class="feat-item"><div class="feat-icon solar">✓</div><span>Installation certifiée QualiPV · Garantie produit 25 ans · SAV national</span></div>
+          <div class="feat-item"><div class="feat-icon solar">✓</div><span>Installation certifiée QualiPV · Garantie 25 ans · SAV national</span></div>
         </div>
         <a href="#leadForm" class="product-cta" style="background:linear-gradient(135deg,#9A3D0A,var(--solar),var(--solar-2));box-shadow:0 8px 24px rgba(249,115,22,0.32)" onclick="switchTabByName('sol');document.getElementById('leadForm').scrollIntoView({behavior:'smooth'});return false;">Je veux mes panneaux à 1€ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
@@ -368,11 +369,11 @@ footer{background:var(--navy-2);border-top:1px solid var(--card-border);padding:
     <div class="s-tag"><div class="tag-line" style="background:linear-gradient(90deg,transparent,var(--gold))"></div><span style="color:var(--gold)">La démarche</span></div>
     <h2 class="s-title">De zéro à votre maison<br>éco-énergétique en <em>5 étapes</em></h2>
     <div class="process-steps">
-      <div class="ps-item reveal"><div class="ps-num">1</div><div class="ps-title">Simulation</div><p class="ps-desc">Remplissez le formulaire en 2 minutes. Vérification instantanée de votre éligibilité.</p></div>
-      <div class="ps-item reveal"><div class="ps-num">2</div><div class="ps-title">Audit gratuit</div><p class="ps-desc">Un expert certifié se déplace chez vous. Étude personnalisée de votre logement.</p></div>
-      <div class="ps-item reveal"><div class="ps-num">3</div><div class="ps-title">Devis & aides</div><p class="ps-desc">Nous montons votre dossier MaPrimeRénov', CEE et TVA réduite. Zéro paperasse.</p></div>
-      <div class="ps-item reveal"><div class="ps-num">4</div><div class="ps-title">Installation</div><p class="ps-desc">Pose par nos installateurs RGE en 1 à 2 jours. Mise en service immédiate.</p></div>
-      <div class="ps-item reveal"><div class="ps-num">5</div><div class="ps-title">Suivi & SAV</div><p class="ps-desc">Accompagnement post-installation, monitoring et service après-vente national.</p></div>
+      <div class="ps-item reveal"><div class="ps-num">1</div><div class="ps-title">Simulation</div><p class="ps-desc">Remplissez le formulaire en 2 minutes.</p></div>
+      <div class="ps-item reveal"><div class="ps-num">2</div><div class="ps-title">Audit gratuit</div><p class="ps-desc">Un expert se déplace chez vous gratuitement.</p></div>
+      <div class="ps-item reveal"><div class="ps-num">3</div><div class="ps-title">Devis & aides</div><p class="ps-desc">Nous montons votre dossier MaPrimeRénov'.</p></div>
+      <div class="ps-item reveal"><div class="ps-num">4</div><div class="ps-title">Installation</div><p class="ps-desc">Pose en 1 à 2 jours par nos installateurs RGE.</p></div>
+      <div class="ps-item reveal"><div class="ps-num">5</div><div class="ps-title">Suivi & SAV</div><p class="ps-desc">Accompagnement post-installation national.</p></div>
     </div>
   </div>
 </section>
@@ -382,9 +383,9 @@ footer{background:var(--navy-2);border-top:1px solid var(--card-border);padding:
     <div class="s-tag"><div class="tag-line" style="background:linear-gradient(90deg,transparent,var(--gold))"></div><span style="color:var(--gold)">Témoignages clients</span></div>
     <h2 class="s-title">Ils ont fait confiance,<br>voici ce qu'ils <em>disent</em></h2>
     <div class="testi-grid">
-      <div class="testi-card reveal"><div class="testi-product-tag">🌡️ PAC air/eau</div><div class="testi-q">"</div><p class="testi-text">Ma facture de gaz est passée de 220€ à 48€ par mois. L'équipe a géré toute l'administratif, je n'ai eu qu'à signer et payer 1€. Incroyable service.</p><div class="testi-author"><div class="testi-av">ML</div><div><div class="testi-stars">★★★★★</div><div class="testi-name">Marie-Louise D.</div><div class="testi-city">Toulouse, 31 · installée oct. 2024</div></div></div></div>
-      <div class="testi-card reveal"><div class="testi-product-tag">☀️ Pack solaire 6kWc</div><div class="testi-q">"</div><p class="testi-text">Production de 7 200 kWh la première année. Je revends le surplus 870€ à EDF et mon électricité me coûte presque rien.</p><div class="testi-author"><div class="testi-av">PC</div><div><div class="testi-stars">★★★★★</div><div class="testi-name">Pierre-Claude M.</div><div class="testi-city">Montpellier, 34 · installé juin 2024</div></div></div></div>
-      <div class="testi-card reveal"><div class="testi-product-tag">⚡ Pack Duo PAC + Solaire</div><div class="testi-q">"</div><p class="testi-text">J'ai pris le pack complet PAC + panneaux. Mon DPE est passé de F à B+. La valeur de ma maison a augmenté de 18 000€.</p><div class="testi-author"><div class="testi-av">SB</div><div><div class="testi-stars">★★★★★</div><div class="testi-name">Sylvie B.</div><div class="testi-city">Lyon, 69 · installée janv. 2025</div></div></div></div>
+      <div class="testi-card reveal"><div class="testi-product-tag">🌡️ PAC air/eau</div><div class="testi-q">"</div><p class="testi-text">Ma facture de gaz est passée de 220€ à 48€ par mois. L'équipe a géré tout l'administratif, je n'ai eu qu'à signer et payer 1€.</p><div class="testi-author"><div class="testi-av">ML</div><div><div class="testi-stars">★★★★★</div><div class="testi-name">Marie-Louise D.</div><div class="testi-city">Toulouse, 31 · oct. 2024</div></div></div></div>
+      <div class="testi-card reveal"><div class="testi-product-tag">☀️ Pack solaire 6kWc</div><div class="testi-q">"</div><p class="testi-text">Production de 7 200 kWh la première année. Je revends le surplus 870€ à EDF. Retour sur investissement déjà amorcé.</p><div class="testi-author"><div class="testi-av">PC</div><div><div class="testi-stars">★★★★★</div><div class="testi-name">Pierre-Claude M.</div><div class="testi-city">Montpellier, 34 · juin 2024</div></div></div></div>
+      <div class="testi-card reveal"><div class="testi-product-tag">⚡ Pack Duo PAC + Solaire</div><div class="testi-q">"</div><p class="testi-text">DPE passé de F à B+. La valeur de ma maison a augmenté de 18 000€. Investissement extraordinaire.</p><div class="testi-author"><div class="testi-av">SB</div><div><div class="testi-stars">★★★★★</div><div class="testi-name">Sylvie B.</div><div class="testi-city">Lyon, 69 · janv. 2025</div></div></div></div>
     </div>
   </div>
 </section>
@@ -392,7 +393,7 @@ footer{background:var(--navy-2);border-top:1px solid var(--card-border);padding:
 <section class="final-cta">
   <div class="final-cta-inner">
     <h2 class="fct-h">Ne laissez pas cette<br>opportunité <em>vous échapper</em></h2>
-    <p class="fct-sub">Les fonds gouvernementaux sont alloués par région et s'épuisent chaque mois.</p>
+    <p class="fct-sub">Les fonds gouvernementaux s'épuisent chaque mois. Vérifiez dès maintenant votre éligibilité.</p>
     <div class="fct-buttons"><a href="#leadForm" class="btn-primary" onclick="document.getElementById('leadForm').scrollIntoView({behavior:'smooth'});return false;">Vérifier mon éligibilité gratuitement</a></div>
   </div>
 </section>
@@ -410,27 +411,24 @@ footer{background:var(--navy-2);border-top:1px solid var(--card-border);padding:
   <div class="fc-text"><strong id="counter">31</strong> personnes consultent cette page</div>
 </div>
 
-<!-- IFRAME INVISIBLE pour soumettre sans blocage -->
-<iframe id="_submit_frame" name="_submit_frame" style="display:none;width:0;height:0;border:0;position:absolute;"></iframe>
-
 <script>
-  // ══════════════════════════════════════════════
-  // ⚙️  VOTRE URL APPS SCRIPT — NE PAS MODIFIER
-  // ══════════════════════════════════════════════
-  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx5Z0fqAnNaSXujhL-Mlh3llbCk-0_6WGv5jaHH6Mrj0ifsOfhhesFiVhtQZnIKSQjR/exec';
+  // ════════════════════════════════════════════════
+  // ⚙️  REMPLACEZ PAR VOTRE NOUVELLE URL APPS SCRIPT
+  // ════════════════════════════════════════════════
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxGx2ByS4ruQxlpq-B5k6FLMYfg-NkD0-X-6_mPsAXKbx7sEjGVkmcA9snB8TPL9Uyg/exec';
 
-  var currentOffre = 'PAC seule';
-
-  var tabData = {
+  // ── TABS ──
+  let currentOffre = 'PAC seule';
+  const tabData = {
     pac: { title: 'Vérifier mon éligibilité — PAC',      old: '8 600 €',  offre: 'PAC seule' },
     sol: { title: 'Vérifier mon éligibilité — Solaire',  old: '12 000 €', offre: 'Panneaux solaires' },
     duo: { title: 'Vérifier mon éligibilité — Pack Duo', old: '20 600 €', offre: 'Pack Duo PAC + Solaire' }
   };
 
   function switchTab(btn, key) {
-    document.querySelectorAll('.offer-tab').forEach(function(t){ t.classList.remove('active'); });
+    document.querySelectorAll('.offer-tab').forEach(t => t.classList.remove('active'));
     btn.classList.add('active');
-    var d = tabData[key];
+    const d = tabData[key];
     currentOffre = d.offre;
     document.getElementById('hiddenOffre').value = currentOffre;
     document.getElementById('formTitle').textContent = d.title;
@@ -439,90 +437,73 @@ footer{background:var(--navy-2);border-top:1px solid var(--card-border);padding:
   }
 
   function switchTabByName(key) {
-    var tabs = document.querySelectorAll('.offer-tab');
-    var keys = ['pac', 'sol', 'duo'];
-    var idx = keys.indexOf(key);
+    const tabs = document.querySelectorAll('.offer-tab');
+    const keys = ['pac', 'sol', 'duo'];
+    const idx = keys.indexOf(key);
     if (idx >= 0) switchTab(tabs[idx], key);
   }
 
-  document.getElementById('leadForm').addEventListener('submit', function(e) {
+  // ── FORMULAIRE → GOOGLE SHEETS ──
+  // Même méthode exacte que le projet qui marche
+  document.getElementById("leadForm").addEventListener("submit", function(e) {
     e.preventDefault();
 
-    var btn = document.querySelector('.submit-btn');
+    const btn = this.querySelector('.cta-btn');
     btn.textContent = '⏳ Envoi en cours...';
     btn.disabled = true;
 
-    // Forcer l'offre
+    // Forcer l'offre active
     document.getElementById('hiddenOffre').value = currentOffre;
 
-    // Créer un formulaire temporaire ciblant l'iframe invisible
-    var tempForm = document.createElement('form');
-    tempForm.method = 'POST';
-    tempForm.action = SCRIPT_URL;
-    tempForm.target = '_submit_frame';
-    tempForm.style.display = 'none';
+    // FormData — même méthode que le projet qui marche
+    const formData = new FormData(this);
 
-    // Collecter tous les champs
-    var fields = {
-      prenom:        document.querySelector('[name="prenom"]').value.trim(),
-      nom:           document.querySelector('[name="nom"]').value.trim(),
-      telephone:     document.querySelector('[name="telephone"]').value.trim(),
-      code_postal:   document.querySelector('[name="code_postal"]').value.trim(),
-      type_logement: document.querySelector('[name="type_logement"]').value,
-      revenus:       document.querySelector('[name="revenus"]').value,
-      offre:         currentOffre
-    };
-
-    // Ajouter les champs au formulaire temporaire
-    Object.keys(fields).forEach(function(key) {
-      var input = document.createElement('input');
-      input.type  = 'hidden';
-      input.name  = key;
-      input.value = fields[key];
-      tempForm.appendChild(input);
-    });
-
-    document.body.appendChild(tempForm);
-    tempForm.submit();
-    document.body.removeChild(tempForm);
-
-    // Afficher succès après 1.5s
-    setTimeout(function() {
-      document.getElementById('successMsg').style.display = 'block';
-      document.getElementById('successMsg').innerHTML =
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode:   'no-cors',
+      body:   formData
+    })
+    .then(() => {
+      document.getElementById("successMsg").style.display = "block";
+      document.getElementById("successMsg").innerHTML =
         '✅ Demande reçue pour <strong>' + currentOffre + '</strong> !<br>Un conseiller vous rappelle sous 48h.';
-      document.getElementById('leadForm').reset();
+      this.reset();
       document.getElementById('hiddenOffre').value = currentOffre;
       btn.textContent = 'Obtenir mon devis gratuit →';
       btn.disabled = false;
-    }, 1500);
+    })
+    .catch(() => {
+      alert("Erreur d'envoi. Veuillez réessayer.");
+      btn.textContent = 'Obtenir mon devis gratuit →';
+      btn.disabled = false;
+    });
   });
 
   // ── NAV SCROLL ──
-  window.addEventListener('scroll', function() {
+  window.addEventListener('scroll', () => {
     document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 60);
   });
 
   // ── COMPTEUR ──
-  var cEl = document.getElementById('counter');
-  var base = 31;
-  setInterval(function() {
-    var d = Math.random() < 0.5 ? -1 : 1;
+  const cEl = document.getElementById('counter');
+  let base = 31;
+  setInterval(() => {
+    const d = Math.random() < 0.5 ? -1 : 1;
     base = Math.max(18, Math.min(52, base + d));
     cEl.textContent = base;
   }, 3800);
 
   // ── REVEAL SCROLL ──
-  var obs = new IntersectionObserver(function(entries) {
-    entries.forEach(function(e) {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
       if (e.isIntersecting) {
-        var i = Array.from(e.target.parentElement.children).indexOf(e.target);
+        const i = Array.from(e.target.parentElement.children).indexOf(e.target);
         e.target.style.transitionDelay = (i * 0.08) + 's';
         e.target.classList.add('visible');
       }
     });
   }, { threshold: 0.1 });
-  document.querySelectorAll('.reveal').forEach(function(el) { obs.observe(el); });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 </script>
 </body>
 </html>

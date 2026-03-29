@@ -71,6 +71,7 @@ nav.scrolled{height:56px;background:rgba(6,13,31,0.98)}
 .f-field input::placeholder{color:var(--muted)}
 .f-field input:focus,.f-field select:focus{border-color:rgba(212,168,67,0.45);box-shadow:0 0 0 3px rgba(212,168,67,0.07)}
 .f-field select option{background:var(--navy-2)}
+/* ✅ BOUTON = cta-btn — même nom que le projet qui marche */
 .cta-btn{width:100%;background:linear-gradient(135deg,#A67C1A,var(--gold),var(--gold-2));color:var(--navy);border:none;border-radius:10px;padding:15px;font-family:'Outfit',sans-serif;font-size:0.9rem;font-weight:700;letter-spacing:0.04em;cursor:pointer;margin-top:4px;position:relative;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;box-shadow:0 8px 28px rgba(212,168,67,0.38)}
 .cta-btn:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(212,168,67,0.5)}
 .cta-btn:disabled{opacity:0.7;cursor:not-allowed;transform:none}
@@ -178,11 +179,8 @@ footer{background:var(--navy-2);border-top:1px solid var(--card-border);padding:
 .fc-text strong{color:var(--gold)}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
 @keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-
-/* ✅ CORRECTION 2 : .reveal invisible sans IntersectionObserver → géré en JS */
 .reveal{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease}
 .reveal.visible{opacity:1;transform:translateY(0)}
-
 @media(max-width:960px){nav{padding:0 20px;height:60px}.nav-links{display:none}.hero{padding:100px 20px 60px}.hero-inner{grid-template-columns:1fr;gap:44px}.form-card{padding:28px 22px}.nb-inner{grid-template-columns:1fr 1fr;gap:0;row-gap:32px}.nb-item+.nb-item::before{display:none}.product-section{padding:70px 0}.product-grid{grid-template-columns:1fr;gap:48px}.product-grid.reverse{direction:ltr}.process-section{padding:70px 0}.process-steps{grid-template-columns:1fr 1fr;gap:36px;row-gap:40px}.process-steps::before{display:none}.testi-grid{grid-template-columns:1fr 1fr;gap:16px}.s-inner{padding:0 20px}.logos-bar{padding:28px 20px}.nb-inner{padding:0 20px}.final-cta-inner{padding:0 20px}footer{padding:36px 20px}.float-counter{bottom:16px;right:16px}}
 @media(max-width:600px){.topbar{font-size:0.65rem;padding:8px 12px}nav{padding:0 16px;height:56px}.nav-cta{padding:7px 14px;font-size:0.7rem}.hero{padding:90px 16px 50px}.hero-stats{flex-direction:column}.hstat+.hstat::before{display:none}.hstat{border-top:1px solid var(--card-border);padding:12px 16px}.hstat:first-child{border-top:none}.form-card{padding:22px 16px}.row-2{grid-template-columns:1fr}.nb-num{font-size:2.2rem}.process-steps{grid-template-columns:1fr;gap:28px}.testi-section{padding:56px 0}.testi-grid{grid-template-columns:1fr;gap:14px}.final-cta{padding:70px 0}.fct-buttons{flex-direction:column;align-items:center}.btn-primary{width:100%;text-align:center}.footer-inner{flex-direction:column;align-items:flex-start;gap:20px}.float-counter{bottom:12px;right:12px}}
 @media(max-width:380px){.hero-h1{font-size:1.9rem}.form-offer-toggle{flex-direction:column;gap:4px}.offer-tab{text-align:center;padding:8px}}
@@ -279,6 +277,7 @@ footer{background:var(--navy-2);border-top:1px solid var(--card-border);padding:
               </div>
             </div>
           </div>
+          <!-- ✅ BOUTON cta-btn — identique au projet qui marche -->
           <button type="submit" class="cta-btn">Obtenir mon devis gratuit →</button>
         </form>
 
@@ -331,7 +330,6 @@ footer{background:var(--navy-2);border-top:1px solid var(--card-border);padding:
           <div class="feat-item"><div class="feat-icon gold">✓</div><span>Zéro émission CO₂ — DPE amélioré, valeur immobilière augmentée</span></div>
           <div class="feat-item"><div class="feat-icon gold">✓</div><span>Installation en 1 journée par installateurs certifiés RGE · Garantie 10 ans</span></div>
         </div>
-        <!-- ✅ CORRECTION 1 : switchTabByName était appelée mais jamais définie -->
         <a href="#leadForm" class="product-cta" onclick="switchTabByName('pac');document.getElementById('leadForm').scrollIntoView({behavior:'smooth'});return false;">Je veux ma PAC à 1€ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
     </div>
@@ -414,88 +412,74 @@ footer{background:var(--navy-2);border-top:1px solid var(--card-border);padding:
 </div>
 
 <script>
-  // ─── Google Sheets ───────────────────────────────────────────────────────────
+  // Configuration de l'URL Google Script
   const scriptURL = 'https://script.google.com/macros/s/AKfycbyuIgHyM4k6iIhI4echDRe1w6-T16oNRdSpmuJ5Eyeyn-z8SxtoHA1Vn9QljeGUAkBw/exec';
-  const form       = document.getElementById('leadForm');
-  const btn        = form.querySelector('.cta-btn');
+  const form = document.getElementById('leadForm');
+  const btn = form.querySelector('.cta-btn');
   const successMsg = document.getElementById('successMsg');
 
   form.addEventListener('submit', e => {
-    e.preventDefault();
-    btn.disabled  = true;
+    e.preventDefault(); // Empêche le rechargement de la page
+    
+    // Désactive le bouton pour éviter les doubles clics
+    btn.disabled = true;
     btn.innerText = "Envoi en cours...";
 
+    // Récupération des données du formulaire
+    const formData = new FormData(form);
     const data = {};
-    new FormData(form).forEach((v, k) => { data[k] = v; });
+    formData.forEach((value, key) => {
+      data[key] = value;
+    });
 
-    fetch(scriptURL, {
-      method:  'POST',
-      mode:    'no-cors',
+    // Envoi vers Google Sheets
+    fetch(scriptURL, { 
+      method: 'POST', 
+      mode: 'no-cors', // Mode spécial pour éviter les erreurs de sécurité
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify(data)
+      body: JSON.stringify(data) 
     })
-    .then(() => {
-      form.style.display       = 'none';
-      successMsg.style.display = 'block';
+    .then(response => {
+      // Succès
+      form.style.display = 'none'; // Cache le formulaire
+      successMsg.style.display = 'block'; // Affiche le message de succès
     })
-    .catch(err => {
-      console.error('Erreur:', err.message);
-      btn.disabled  = false;
-      btn.innerText = "Erreur — Réessayer";
+    .catch(error => {
+      console.error('Erreur!', error.message);
+      btn.disabled = false;
+      btn.innerText = "Erreur - Réessayer";
     });
   });
 
-  // ─── Onglets formulaire ──────────────────────────────────────────────────────
-  function switchTab(tabBtn, type) {
+  // Fonction pour gérer le changement d'onglets (PAC / SOLAIRE / DUO)
+  function switchTab(btn, type) {
+    // UI : Changement visuel des boutons
     document.querySelectorAll('.offer-tab').forEach(b => b.classList.remove('active'));
-    tabBtn.classList.add('active');
+    btn.classList.add('active');
+    
+    // Mise à jour du champ caché et des textes
+    const hiddenOffre = document.getElementById('hiddenOffre');
+    const displayOffre = document.getElementById('selectedOffer');
+    const formTitle = document.getElementById('formTitle');
+    const priceOld = document.getElementById('priceOld');
 
-    const map = {
-      pac: { value: "PAC seule",       label: "✓ Offre : PAC seule",    title: "Vérifier mon éligibilité — PAC",     price: "8 600 €"  },
-      sol: { value: "Solaire seul",     label: "✓ Offre : Solaire seul", title: "Vérifier mon éligibilité — Solaire", price: "12 400 €" },
-      duo: { value: "Pack Duo PAC+SOL", label: "✓ Offre : Pack Duo",     title: "Vérifier mon éligibilité — DUO",     price: "19 800 €" }
-    };
-    const cfg = map[type] || map.pac;
-
-    document.getElementById('hiddenOffre').value    = cfg.value;
-    document.getElementById('selectedOffer').innerText = cfg.label;
-    document.getElementById('formTitle').innerText   = cfg.title;
-    document.getElementById('priceOld').innerText    = cfg.price;
+    if(type === 'pac') {
+      hiddenOffre.value = "PAC seule";
+      displayOffre.innerText = "✓ Offre : PAC seule";
+      formTitle.innerText = "Vérifier mon éligibilité — PAC";
+      priceOld.innerText = "8 600 €";
+    } else if(type === 'sol') {
+      hiddenOffre.value = "Solaire seul";
+      displayOffre.innerText = "✓ Offre : Solaire seul";
+      formTitle.innerText = "Vérifier mon éligibilité — Solaire";
+      priceOld.innerText = "12 400 €";
+    } else {
+      hiddenOffre.value = "Pack Duo PAC+SOL";
+      displayOffre.innerText = "✓ Offre : Pack Duo";
+      formTitle.innerText = "Vérifier mon éligibilité — DUO";
+      priceOld.innerText = "19 800 €";
+    }
   }
-
-  // ✅ CORRECTION 1 — fonction manquante appelée par les boutons PAC & Solaire
-  function switchTabByName(type) {
-    const index = { pac: 0, sol: 1, duo: 2 };
-    const tabs  = document.querySelectorAll('.offer-tab');
-    const idx   = index[type] ?? 0;
-    switchTab(tabs[idx], type);
-  }
-
-  // ─── Nav scroll ──────────────────────────────────────────────────────────────
-  window.addEventListener('scroll', () => {
-    document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 60);
-  });
-
-  // ✅ CORRECTION 2 — IntersectionObserver manquant : les .reveal restaient
-  //    invisibles (opacity:0) car personne n'ajoutait la classe .visible
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.12 });
-
-  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-
-  // ─── Compteur flottant (simulation temps réel) ───────────────────────────────
-  const counterEl = document.getElementById('counter');
-  let count = 31;
-  setInterval(() => {
-    count = Math.max(18, Math.min(52, count + (Math.random() < 0.5 ? -1 : 1)));
-    counterEl.textContent = count;
-  }, 4000);
 </script>
 </body>
 </html>

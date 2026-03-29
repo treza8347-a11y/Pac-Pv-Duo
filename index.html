@@ -179,8 +179,7 @@ footer{background:var(--navy-2);border-top:1px solid var(--card-border);padding:
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
 @keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 
-/* ✅ FIX : les éléments .reveal sont maintenant visibles par défaut,
-   et l'animation au scroll est gérée en JS */
+/* ✅ CORRECTION 2 : .reveal invisible sans IntersectionObserver → géré en JS */
 .reveal{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease}
 .reveal.visible{opacity:1;transform:translateY(0)}
 
@@ -332,6 +331,7 @@ footer{background:var(--navy-2);border-top:1px solid var(--card-border);padding:
           <div class="feat-item"><div class="feat-icon gold">✓</div><span>Zéro émission CO₂ — DPE amélioré, valeur immobilière augmentée</span></div>
           <div class="feat-item"><div class="feat-icon gold">✓</div><span>Installation en 1 journée par installateurs certifiés RGE · Garantie 10 ans</span></div>
         </div>
+        <!-- ✅ CORRECTION 1 : switchTabByName était appelée mais jamais définie -->
         <a href="#leadForm" class="product-cta" onclick="switchTabByName('pac');document.getElementById('leadForm').scrollIntoView({behavior:'smooth'});return false;">Je veux ma PAC à 1€ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
     </div>
@@ -416,77 +416,68 @@ footer{background:var(--navy-2);border-top:1px solid var(--card-border);padding:
 <script>
   // ─── Google Sheets ───────────────────────────────────────────────────────────
   const scriptURL = 'https://script.google.com/macros/s/AKfycbyuIgHyM4k6iIhI4echDRe1w6-T16oNRdSpmuJ5Eyeyn-z8SxtoHA1Vn9QljeGUAkBw/exec';
-  const form = document.getElementById('leadForm');
-  const btn = form.querySelector('.cta-btn');
+  const form       = document.getElementById('leadForm');
+  const btn        = form.querySelector('.cta-btn');
   const successMsg = document.getElementById('successMsg');
 
   form.addEventListener('submit', e => {
     e.preventDefault();
-    btn.disabled = true;
+    btn.disabled  = true;
     btn.innerText = "Envoi en cours...";
-    const formData = new FormData(form);
+
     const data = {};
-    formData.forEach((value, key) => { data[key] = value; });
+    new FormData(form).forEach((v, k) => { data[k] = v; });
+
     fetch(scriptURL, {
-      method: 'POST',
-      mode: 'no-cors',
+      method:  'POST',
+      mode:    'no-cors',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
+      body:    JSON.stringify(data)
     })
     .then(() => {
-      form.style.display = 'none';
+      form.style.display       = 'none';
       successMsg.style.display = 'block';
     })
-    .catch(error => {
-      console.error('Erreur!', error.message);
-      btn.disabled = false;
-      btn.innerText = "Erreur - Réessayer";
+    .catch(err => {
+      console.error('Erreur:', err.message);
+      btn.disabled  = false;
+      btn.innerText = "Erreur — Réessayer";
     });
   });
 
-  // ─── Onglets du formulaire ───────────────────────────────────────────────────
+  // ─── Onglets formulaire ──────────────────────────────────────────────────────
   function switchTab(tabBtn, type) {
     document.querySelectorAll('.offer-tab').forEach(b => b.classList.remove('active'));
     tabBtn.classList.add('active');
-    const hiddenOffre  = document.getElementById('hiddenOffre');
-    const displayOffre = document.getElementById('selectedOffer');
-    const formTitle    = document.getElementById('formTitle');
-    const priceOld     = document.getElementById('priceOld');
-    if (type === 'pac') {
-      hiddenOffre.value      = "PAC seule";
-      displayOffre.innerText = "✓ Offre : PAC seule";
-      formTitle.innerText    = "Vérifier mon éligibilité — PAC";
-      priceOld.innerText     = "8 600 €";
-    } else if (type === 'sol') {
-      hiddenOffre.value      = "Solaire seul";
-      displayOffre.innerText = "✓ Offre : Solaire seul";
-      formTitle.innerText    = "Vérifier mon éligibilité — Solaire";
-      priceOld.innerText     = "12 400 €";
-    } else {
-      hiddenOffre.value      = "Pack Duo PAC+SOL";
-      displayOffre.innerText = "✓ Offre : Pack Duo";
-      formTitle.innerText    = "Vérifier mon éligibilité — DUO";
-      priceOld.innerText     = "19 800 €";
-    }
+
+    const map = {
+      pac: { value: "PAC seule",       label: "✓ Offre : PAC seule",    title: "Vérifier mon éligibilité — PAC",     price: "8 600 €"  },
+      sol: { value: "Solaire seul",     label: "✓ Offre : Solaire seul", title: "Vérifier mon éligibilité — Solaire", price: "12 400 €" },
+      duo: { value: "Pack Duo PAC+SOL", label: "✓ Offre : Pack Duo",     title: "Vérifier mon éligibilité — DUO",     price: "19 800 €" }
+    };
+    const cfg = map[type] || map.pac;
+
+    document.getElementById('hiddenOffre').value    = cfg.value;
+    document.getElementById('selectedOffer').innerText = cfg.label;
+    document.getElementById('formTitle').innerText   = cfg.title;
+    document.getElementById('priceOld').innerText    = cfg.price;
   }
 
-  // ✅ FIX — fonction manquante appelée par les boutons des sections produit
+  // ✅ CORRECTION 1 — fonction manquante appelée par les boutons PAC & Solaire
   function switchTabByName(type) {
-    const tabs = document.querySelectorAll('.offer-tab');
-    // tabs[0] = PAC, tabs[1] = Solaire, tabs[2] = Duo
-    const map = { pac: 0, sol: 1, duo: 2 };
-    const idx = map[type] ?? 0;
+    const index = { pac: 0, sol: 1, duo: 2 };
+    const tabs  = document.querySelectorAll('.offer-tab');
+    const idx   = index[type] ?? 0;
     switchTab(tabs[idx], type);
   }
 
-  // ─── Nav scroll ─────────────────────────────────────────────────────────────
+  // ─── Nav scroll ──────────────────────────────────────────────────────────────
   window.addEventListener('scroll', () => {
     document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 60);
   });
 
-  // ─── Scroll reveal ──────────────────────────────────────────────────────────
-  // ✅ FIX — les éléments .reveal restaient invisibles car l'Observer
-  //          n'était pas initialisé dans le code d'origine.
+  // ✅ CORRECTION 2 — IntersectionObserver manquant : les .reveal restaient
+  //    invisibles (opacity:0) car personne n'ajoutait la classe .visible
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -498,12 +489,11 @@ footer{background:var(--navy-2);border-top:1px solid var(--card-border);padding:
 
   document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-  // ─── Compteur flottant (simulation) ─────────────────────────────────────────
+  // ─── Compteur flottant (simulation temps réel) ───────────────────────────────
   const counterEl = document.getElementById('counter');
   let count = 31;
   setInterval(() => {
-    const delta = Math.random() < 0.5 ? -1 : 1;
-    count = Math.max(18, Math.min(52, count + delta));
+    count = Math.max(18, Math.min(52, count + (Math.random() < 0.5 ? -1 : 1)));
     counterEl.textContent = count;
   }, 4000);
 </script>
